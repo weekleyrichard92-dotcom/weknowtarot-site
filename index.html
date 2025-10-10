@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>We Know Tarot — Home</title>
+  <script type="module" src="/src/scripts/main.js"></script>
+</head>
+<body class="text-white mystic-gradient min-h-screen">
+  <div id="navbar"></div>
+
+  <header class="max-w-6xl mx-auto px-4 pt-16 pb-12">
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <img src="/src/assets/images/header-banner.jpg" alt="Mystic Banner" class="rounded-2xl border border-white/10 shadow-mystic">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-serif gold-text">We Know Tarot</h1>
+        <p class="mt-4 text-white/80">Guidance under starlight. Explore products, collections, and our upcoming reading app.</p>
+        <div class="mt-6 flex gap-3">
+          <a href="/products.html" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20">Browse Products</a>
+          <a href="/app.html" class="px-4 py-2 rounded-xl border border-white/20 hover:bg-white/10">Try the App (Soon)</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="max-w-6xl mx-auto px-4 pb-24">
+    <h2 class="text-2xl font-serif moon-text mb-6">Featured</h2>
+    <div id="product-grid" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+  </section>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { loadProducts } from '/src/scripts/products.js';
+    loadProducts();
+  </script>
+</body>
+</html>

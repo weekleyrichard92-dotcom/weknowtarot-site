@@ -1,0 +1,23 @@
+[
+  {
+    "id": "p1",
+    "title": "Arcana Guidebook (Digital)",
+    "description": "A concise PDF to interpret spreads and symbols.",
+    "price": 9.99,
+    "image": "/src/assets/images/product-sample.jpg"
+  },
+  {
+    "id": "p2",
+    "title": "Moonlit Reading (15 min)",
+    "description": "Quick clarity under the moon \u2014 3-card pull.",
+    "price": 19.0,
+    "image": "/src/assets/images/product-sample.jpg"
+  },
+  {
+    "id": "p3",
+    "title": "Full Spread Reading (45 min)",
+    "description": "Deep dive with Celtic Cross and guided notes.",
+    "price": 59.0,
+    "image": "/src/assets/images/product-sample.jpg"
+  }
+]
