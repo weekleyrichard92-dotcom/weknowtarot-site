@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>We Know Tarot — Checkout</title>
+  <script type="module" src="/src/scripts/main.js"></script>
+</head>
+<body class="text-white mystic-gradient min-h-screen">
+  <div id="navbar"></div>
+
+  <main
+    id="checkout-root"
+    class="max-w-5xl mx-auto px-4 pt-12 pb-24"
+    data-paypal-client-id=""
+    data-paypal-merchant-id=""
+    data-paypal-currency="USD"
+    data-paypal-intent="capture"
+    data-paypal-enable-funding="venmo,paylater,card"
+  >
+    <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-8">
+      <section class="card p-8 flex flex-col gap-6">
+        <header>
+          <p class="uppercase tracking-[0.25em] text-sm text-white/60">Order summary</p>
+          <h1 class="mt-2 text-3xl font-serif gold-text">Complete your purchase</h1>
+          <p class="mt-3 text-white/70">Choose the payment option that fits you best. Secure checkout is provided by PayPal.</p>
+        </header>
+
+        <div class="space-y-4" id="order-items"></div>
+
+        <div class="border-t border-white/10 pt-4 flex flex-col gap-2 text-sm text-white/70">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span id="order-subtotal" class="text-white"></span>
+          </div>
+          <div class="flex justify-between">
+            <span>Estimated tax</span>
+            <span class="text-white/50">$0.00</span>
+          </div>
+          <div class="flex justify-between text-base font-medium text-white">
+            <span>Total</span>
+            <span id="order-total" class="text-lg font-semibold"></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="card p-8 flex flex-col gap-6">
+        <header class="space-y-2">
+          <p class="uppercase tracking-[0.25em] text-sm text-white/60">Express checkout</p>
+          <h2 class="text-2xl font-serif moon-text">Powered by PayPal</h2>
+        </header>
+
+        <div id="funding-marks" class="flex flex-wrap gap-4 items-center text-black"></div>
+        <p id="funding-hint" class="hidden text-xs text-white/60">
+          Additional PayPal buttons (Venmo, Pay Later, cards) appear automatically when your merchant account is eligible for them.
+        </p>
+
+        <div class="space-y-3">
+          <div id="paypal-button-container"></div>
+          <div id="venmo-button-container"></div>
+          <div id="paylater-button-container"></div>
+        </div>
+
+        <div class="border-t border-white/10 pt-6 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm uppercase tracking-[0.2em] text-white/60">Pay another way</span>
+            <div id="card-marks" class="text-black"></div>
+          </div>
+          <div id="card-button-container"></div>
+          <p class="text-xs text-white/50">Debit or credit card payments are processed securely through PayPal.</p>
+        </div>
+
+        <div id="transaction-message" class="hidden rounded-xl bg-emerald-500/10 border border-emerald-400/40 text-emerald-200 text-sm px-4 py-3"></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script type="module">
+    import { initCheckout } from '/src/scripts/checkout.js';
+    initCheckout();
+  </script>
+</body>
+</html>
