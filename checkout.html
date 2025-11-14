@@ -1,0 +1,98 @@
+<!-- 
+IMPORTANT (For Mr. Codex):
+- Only remove the red-marked content from the screenshot.
+- Keep the “Checkout” title.
+- Insert the PayPal placeholder code below it.
+- Do NOT delete, reformat, or overwrite navbar/footer includes.
+- Backup checkout.html first (checkout_backup.html).
+-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>We Know Tarot — Checkout</title>
+  <script type="module" src="/src/scripts/main.js"></script>
+  <!-- PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=BAA00XX9XELexEarjPj2YSz6SKy6bvntVuDhsCn4YuUAMPDPZIfiMySgML3uBGEgn1F6kSA9LD9WR&components=hosted-buttons&enable-funding=venmo&currency=USD"></script>
+  <style>
+    .paypal-wrapper {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .paypal-fallback {
+      display: inline-flex;
+    }
+    .paypal-fallback button {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: linear-gradient(135deg, #ffc439, #ffb347);
+      color: #111;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 12px 30px rgba(255, 196, 70, 0.4);
+    }
+    .paypal-fallback button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(255, 196, 70, 0.5);
+    }
+  </style>
+</head>
+<body class="text-white mystic-gradient min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="max-w-3xl mx-auto px-4 pt-16 pb-24 text-center">
+    <section class="max-w-md mx-auto mt-16 text-center">
+      <h1 class="text-3xl font-serif gold-text mb-6">Checkout</h1>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-8 shadow-mystic backdrop-blur">
+        <p class="text-white/75 text-sm leading-relaxed">
+          Complete your purchase securely with PayPal. Once your payment is confirmed, your digital tarot goods arrive right away.
+        </p>
+        <div class="paypal-wrapper">
+          <div id="paypal-container-TAVGNJ2DNLEWJ">
+            <form class="paypal-fallback" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+              <input type="hidden" name="cmd" value="_s-xclick" />
+              <input type="hidden" name="hosted_button_id" value="TAVGNJ2DNLEWJ" />
+              <button type="submit">Checkout with PayPal</button>
+            </form>
+          </div>
+        </div>
+        <p class="text-xs text-white/50 mt-6">Powered by PayPal</p>
+      </div>
+    </section>
+    <script>
+      (function attachPayPalButton() {
+        const containerSelector = "#paypal-container-TAVGNJ2DNLEWJ";
+        const renderButton = () => {
+          if (!(window.paypal && paypal.HostedButtons)) return false;
+          paypal.HostedButtons({ hostedButtonId: "TAVGNJ2DNLEWJ" })
+            .render(containerSelector)
+            .catch(() => {
+              /* fall back to static form */
+            });
+          return true;
+        };
+
+        if (!renderButton()) {
+          const retryDelays = [100, 250, 500, 1000];
+          retryDelays.forEach(delay => {
+            setTimeout(renderButton, delay);
+          });
+          window.addEventListener('load', renderButton, { once: true });
+        }
+      })();
+    </script>
+  </main>
+
+  <div id="footer"></div>
+</body>
+</html>

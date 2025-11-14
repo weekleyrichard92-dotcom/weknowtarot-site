@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tarot Reader — We Know Tarot</title>
+  <script type="module" src="/src/scripts/main.js"></script>
+</head>
+<body class="text-white mystic-gradient min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="max-w-6xl mx-auto px-4 pt-20 pb-24">
+    <h1 id="reader" class="text-center text-5xl md:text-6xl font-serif gold-text mb-12">Tarot Reader</h1>
+    <div class="relative rounded-2xl overflow-hidden border border-white/15 shadow-mystic">
+      <div class="absolute inset-0 reader-backdrop"></div>
+      <div class="absolute inset-0 bg-black/40"></div>
+      <div class="relative">
+      <iframe
+        src="/tarot-reader/index.html"
+        title="Interactive Tarot Reading App"
+        class="w-full min-h-[900px] bg-transparent"
+        style="border:0;"
+      ></iframe>
+      </div>
+    </div>
+    <p class="mt-4 text-sm text-white/70">
+      If the reader does not load, <a href="/tarot-reader/index.html" class="underline">open it in a new tab</a>.
+    </p>
+  </main>
+
+  <div id="footer"></div>
+</body>
+</html>

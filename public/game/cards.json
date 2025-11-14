@@ -1,0 +1,392 @@
+[
+  {
+    "id": "0",
+    "name": "0",
+    "image": "/game/cards/0.png"
+  },
+  {
+    "id": "1",
+    "name": "1",
+    "image": "/game/cards/1.png"
+  },
+  {
+    "id": "10",
+    "name": "10",
+    "image": "/game/cards/10.png"
+  },
+  {
+    "id": "11",
+    "name": "11",
+    "image": "/game/cards/11.png"
+  },
+  {
+    "id": "12",
+    "name": "12",
+    "image": "/game/cards/12.png"
+  },
+  {
+    "id": "13",
+    "name": "13",
+    "image": "/game/cards/13.png"
+  },
+  {
+    "id": "14",
+    "name": "14",
+    "image": "/game/cards/14.png"
+  },
+  {
+    "id": "15",
+    "name": "15",
+    "image": "/game/cards/15.png"
+  },
+  {
+    "id": "16",
+    "name": "16",
+    "image": "/game/cards/16.png"
+  },
+  {
+    "id": "17",
+    "name": "17",
+    "image": "/game/cards/17.png"
+  },
+  {
+    "id": "18",
+    "name": "18",
+    "image": "/game/cards/18.png"
+  },
+  {
+    "id": "19",
+    "name": "19",
+    "image": "/game/cards/19.png"
+  },
+  {
+    "id": "2",
+    "name": "2",
+    "image": "/game/cards/2.png"
+  },
+  {
+    "id": "20",
+    "name": "20",
+    "image": "/game/cards/20.png"
+  },
+  {
+    "id": "21",
+    "name": "21",
+    "image": "/game/cards/21.png"
+  },
+  {
+    "id": "3",
+    "name": "3",
+    "image": "/game/cards/3.png"
+  },
+  {
+    "id": "4",
+    "name": "4",
+    "image": "/game/cards/4.png"
+  },
+  {
+    "id": "5",
+    "name": "5",
+    "image": "/game/cards/5.png"
+  },
+  {
+    "id": "6",
+    "name": "6",
+    "image": "/game/cards/6.png"
+  },
+  {
+    "id": "7",
+    "name": "7",
+    "image": "/game/cards/7.png"
+  },
+  {
+    "id": "8",
+    "name": "8",
+    "image": "/game/cards/8.png"
+  },
+  {
+    "id": "9",
+    "name": "9",
+    "image": "/game/cards/9.png"
+  },
+  {
+    "id": "cups_01",
+    "name": "Cups 01",
+    "image": "/game/cards/cups_01.png"
+  },
+  {
+    "id": "cups_02",
+    "name": "Cups 02",
+    "image": "/game/cards/cups_02.png"
+  },
+  {
+    "id": "cups_03",
+    "name": "Cups 03",
+    "image": "/game/cards/cups_03.png"
+  },
+  {
+    "id": "cups_04",
+    "name": "Cups 04",
+    "image": "/game/cards/cups_04.png"
+  },
+  {
+    "id": "cups_05",
+    "name": "Cups 05",
+    "image": "/game/cards/cups_05.png"
+  },
+  {
+    "id": "cups_06",
+    "name": "Cups 06",
+    "image": "/game/cards/cups_06.png"
+  },
+  {
+    "id": "cups_07",
+    "name": "Cups 07",
+    "image": "/game/cards/cups_07.png"
+  },
+  {
+    "id": "cups_08",
+    "name": "Cups 08",
+    "image": "/game/cards/cups_08.png"
+  },
+  {
+    "id": "cups_09",
+    "name": "Cups 09",
+    "image": "/game/cards/cups_09.png"
+  },
+  {
+    "id": "cups_10",
+    "name": "Cups 10",
+    "image": "/game/cards/cups_10.png"
+  },
+  {
+    "id": "king cups",
+    "name": "King Cups",
+    "image": "/game/cards/king cups.png"
+  },
+  {
+    "id": "king pent",
+    "name": "King Pent",
+    "image": "/game/cards/king pent.png"
+  },
+  {
+    "id": "king swords",
+    "name": "King Swords",
+    "image": "/game/cards/king swords.png"
+  },
+  {
+    "id": "king wands",
+    "name": "King Wands",
+    "image": "/game/cards/king wands.png"
+  },
+  {
+    "id": "knight cups",
+    "name": "Knight Cups",
+    "image": "/game/cards/knight cups.png"
+  },
+  {
+    "id": "knight pent",
+    "name": "Knight Pent",
+    "image": "/game/cards/knight pent.png"
+  },
+  {
+    "id": "knight swords",
+    "name": "Knight Swords",
+    "image": "/game/cards/knight swords.png"
+  },
+  {
+    "id": "knight wands",
+    "name": "Knight Wands",
+    "image": "/game/cards/knight wands.png"
+  },
+  {
+    "id": "page cups",
+    "name": "Page Cups",
+    "image": "/game/cards/page cups.png"
+  },
+  {
+    "id": "page pent",
+    "name": "Page Pent",
+    "image": "/game/cards/page pent.png"
+  },
+  {
+    "id": "page swords",
+    "name": "Page Swords",
+    "image": "/game/cards/page swords.png"
+  },
+  {
+    "id": "page wands",
+    "name": "Page Wands",
+    "image": "/game/cards/page wands.png"
+  },
+  {
+    "id": "pent_01",
+    "name": "Pent 01",
+    "image": "/game/cards/pent_01.png"
+  },
+  {
+    "id": "pent_02",
+    "name": "Pent 02",
+    "image": "/game/cards/pent_02.png"
+  },
+  {
+    "id": "pent_03",
+    "name": "Pent 03",
+    "image": "/game/cards/pent_03.png"
+  },
+  {
+    "id": "pent_04",
+    "name": "Pent 04",
+    "image": "/game/cards/pent_04.png"
+  },
+  {
+    "id": "pent_05",
+    "name": "Pent 05",
+    "image": "/game/cards/pent_05.png"
+  },
+  {
+    "id": "pent_06",
+    "name": "Pent 06",
+    "image": "/game/cards/pent_06.png"
+  },
+  {
+    "id": "pent_07",
+    "name": "Pent 07",
+    "image": "/game/cards/pent_07.png"
+  },
+  {
+    "id": "pent_08",
+    "name": "Pent 08",
+    "image": "/game/cards/pent_08.png"
+  },
+  {
+    "id": "pent_09",
+    "name": "Pent 09",
+    "image": "/game/cards/pent_09.png"
+  },
+  {
+    "id": "pent_10",
+    "name": "Pent 10",
+    "image": "/game/cards/pent_10.png"
+  },
+  {
+    "id": "queen cups",
+    "name": "Queen Cups",
+    "image": "/game/cards/queen cups.png"
+  },
+  {
+    "id": "queen pent",
+    "name": "Queen Pent",
+    "image": "/game/cards/queen pent.png"
+  },
+  {
+    "id": "queen swords",
+    "name": "Queen Swords",
+    "image": "/game/cards/queen swords.png"
+  },
+  {
+    "id": "queen wands",
+    "name": "Queen Wands",
+    "image": "/game/cards/queen wands.png"
+  },
+  {
+    "id": "swords_01",
+    "name": "Swords 01",
+    "image": "/game/cards/swords_01.png"
+  },
+  {
+    "id": "swords_02",
+    "name": "Swords 02",
+    "image": "/game/cards/swords_02.png"
+  },
+  {
+    "id": "swords_03",
+    "name": "Swords 03",
+    "image": "/game/cards/swords_03.png"
+  },
+  {
+    "id": "swords_04",
+    "name": "Swords 04",
+    "image": "/game/cards/swords_04.png"
+  },
+  {
+    "id": "swords_05",
+    "name": "Swords 05",
+    "image": "/game/cards/swords_05.png"
+  },
+  {
+    "id": "swords_06",
+    "name": "Swords 06",
+    "image": "/game/cards/swords_06.png"
+  },
+  {
+    "id": "swords_07",
+    "name": "Swords 07",
+    "image": "/game/cards/swords_07.png"
+  },
+  {
+    "id": "swords_08",
+    "name": "Swords 08",
+    "image": "/game/cards/swords_08.png"
+  },
+  {
+    "id": "swords_09",
+    "name": "Swords 09",
+    "image": "/game/cards/swords_09.png"
+  },
+  {
+    "id": "swords_10",
+    "name": "Swords 10",
+    "image": "/game/cards/swords_10.png"
+  },
+  {
+    "id": "wands_01",
+    "name": "Wands 01",
+    "image": "/game/cards/wands_01.png"
+  },
+  {
+    "id": "wands_02",
+    "name": "Wands 02",
+    "image": "/game/cards/wands_02.png"
+  },
+  {
+    "id": "wands_03",
+    "name": "Wands 03",
+    "image": "/game/cards/wands_03.png"
+  },
+  {
+    "id": "wands_04",
+    "name": "Wands 04",
+    "image": "/game/cards/wands_04.png"
+  },
+  {
+    "id": "wands_05",
+    "name": "Wands 05",
+    "image": "/game/cards/wands_05.png"
+  },
+  {
+    "id": "wands_06",
+    "name": "Wands 06",
+    "image": "/game/cards/wands_06.png"
+  },
+  {
+    "id": "wands_07",
+    "name": "Wands 07",
+    "image": "/game/cards/wands_07.png"
+  },
+  {
+    "id": "wands_08",
+    "name": "Wands 08",
+    "image": "/game/cards/wands_08.png"
+  },
+  {
+    "id": "wands_09",
+    "name": "Wands 09",
+    "image": "/game/cards/wands_09.png"
+  },
+  {
+    "id": "wands_10",
+    "name": "Wands 10",
+    "image": "/game/cards/wands_10.png"
+  }
+]

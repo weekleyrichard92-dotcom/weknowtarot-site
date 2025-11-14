@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - We Know Tarot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom, #0f1115, #0b0c10 40%, #000);
+        }
+
+        .mystic-gradient {
+            background-image:
+                radial-gradient(1000px 600px at 50% -10%, rgba(167,139,250,0.08), transparent),
+                radial-gradient(800px 400px at 80% 10%, rgba(245,212,131,0.06), transparent);
+        }
+
+        .card {
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 20px 80px rgba(12, 12, 15, 0.55);
+            transition: transform 150ms ease, box-shadow 150ms ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 26px 92px rgba(12, 12, 15, 0.65);
+        }
+
+        .gold-text {
+            color: #f5d483;
+        }
+
+        .paypal-button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body class="mystic-gradient min-h-screen">
+    <!-- Navbar -->
+    <nav class="w-full sticky top-0 z-50 bg-black/50 backdrop-blur border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-5 py-4 flex items-center gap-4">
+            <a href="/" class="flex items-center gap-4 shrink-0">
+                <img src="/images/logo.png" alt="We Know Tarot" class="object-contain" style="width:96px;height:auto;" />
+                <span class="text-2xl font-serif tracking-wide gold-text whitespace-nowrap">We Know Tarot</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="w-full max-w-4xl mx-auto px-4 py-16">
+        <!-- Page Title -->
+        <div class="mb-12 text-center">
+            <h1 class="text-4xl font-serif gold-text mb-2">Checkout</h1>
+            <p class="text-white/60">Complete your purchase securely with PayPal</p>
+        </div>
+
+        <!-- Checkout Container -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Order Summary (Left) -->
+            <div class="md:col-span-2">
+                <div class="card p-8 space-y-6">
+                    <h2 class="text-2xl font-serif gold-text mb-6">Order Summary</h2>
+
+                    <!-- Product Item -->
+                    <div class="border-b border-white/10 pb-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-white mb-1">Mindful Tarot Workbook</h3>
+                                <p class="text-sm text-white/60">EPUB Download - Digital Product</p>
+                            </div>
+                            <span class="text-xl font-semibold gold-text">$0.50</span>
+                        </div>
+                        <p class="text-sm text-white/70 leading-relaxed">
+                            A guided digital workbook to deepen your tarot practice through spreads, reflections, and journaling prompts. Delivered instantly upon purchase.
+                        </p>
+                    </div>
+
+                    <!-- Pricing Breakdown -->
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between text-white/80">
+                            <span>Subtotal</span>
+                            <span>$0.50</span>
+                        </div>
+                        <div class="flex justify-between text-white/80">
+                            <span>Shipping</span>
+                            <span>Free (Digital)</span>
+                        </div>
+                        <div class="border-t border-white/10 pt-3 flex justify-between text-lg font-semibold text-white">
+                            <span>Total</span>
+                            <span class="gold-text">$0.50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method (Right) -->
+            <div class="md:col-span-1">
+                <div class="card p-8 sticky top-24">
+                    <h2 class="text-xl font-serif gold-text mb-6">Payment</h2>
+                    
+                    <p class="text-sm text-white/70 mb-6">
+                        Complete your purchase securely with PayPal. Once your payment is confirmed, your digital goods will arrive right away.
+                    </p>
+
+                    <!-- PayPal Button Container -->
+                    <div id="paypal-button-container" class="paypal-button-container"></div>
+
+                    <!-- Trust Badges -->
+                    <div class="mt-8 pt-6 border-t border-white/10 space-y-3 text-xs text-white/60">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.338 8.59a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5a.75.75 0 01.75-.75zm7-2a.75.75 0 00-.75.75v6.5a.75.75 0 001.5 0v-6.5a.75.75 0 00-.75-.75zM5.75.75A.75.75 0 015 0h10a.75.75 0 01.75.75v2.5a.75.75 0 01-1.5 0V1.5H6.5v1.75a.75.75 0 01-1.5 0V.75z" clip-rule="evenodd" />
+                            </svg>
+                            <span>Secure checkout powered by PayPal</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2.5 1A1.5 1.5 0 001 2.5v15A1.5 1.5 0 002.5 19h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0017.5 1h-15zm0 1h15a.5.5 0 01.5.5v15a.5.5 0 01-.5.5h-15a.5.5 0 01-.5-.5v-15a.5.5 0 01.5-.5z" clip-rule="evenodd" />
+                            </svg>
+                            <span>Instant digital delivery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="mt-12 card p-8 bg-black/40">
+            <h3 class="text-lg font-serif gold-text mb-4">What Happens Next?</h3>
+            <ol class="space-y-3 text-sm text-white/80">
+                <li class="flex gap-3">
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-gold-text flex-shrink-0">1</span>
+                    <span>Click the PayPal button above to securely process your payment</span>
+                </li>
+                <li class="flex gap-3">
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-gold-text flex-shrink-0">2</span>
+                    <span>You'll receive an order confirmation email immediately</span>
+                </li>
+                <li class="flex gap-3">
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-gold-text flex-shrink-0">3</span>
+                    <span>Your download link will be included in the confirmation email</span>
+                </li>
+                <li class="flex gap-3">
+                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 text-gold-text flex-shrink-0">4</span>
+                    <span>Enjoy your Mindful Tarot Workbook!</span>
+                </li>
+            </ol>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-24 border-t border-white/10">
+        <div class="max-w-6xl mx-auto px-4 py-10 text-white/70 text-sm flex flex-col md:flex-row items-center justify-between gap-4">
+            <p>© <span id="year"></span> We Know Tarot.</p>
+            <p class="text-white/50">Crafted with ✨ under a waxing moon.</p>
+        </div>
+    </footer>
+
+   <!-- PayPal SDK Script -->
+<script src="https://www.paypal.com/sdk/js?client-id=BAD0Ksyx3Xb1sF2ar7eYZ5x6tGvbetYiXdhSCr4YuLMhPDZf1MkySdL3-uH98gsLf6tGA61S0vPRc&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
+<script>
+    function initPayPalButton() {
+        const hosting_button_id = "TAVGNI2DNLEWJ";
+        if (window.paypal && window.paypal.HostedButtons) {
+            paypal.HostedButtons({
+                hostedButtonId: hosting_button_id
+            }).render("#paypal-button-container");
+        } else {
+            console.error("PayPal SDK not loaded");
+        }
+    }
+
+    // Wait for PayPal SDK to load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPayPalButton);
+    } else {
+        initPayPalButton();
+    }
+
+    // Set footer year
+    document.addEventListener('DOMContentLoaded', () => {
+        const yr = document.getElementById('year');
+        if (yr) yr.textContent = new Date().getFullYear();
+    });
+</script>
