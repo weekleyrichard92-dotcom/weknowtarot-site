@@ -3,48 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tarot Card Game — Cardamon Table</title>
+  <title>Cardamon Tarot Game — We Know Tarot</title>
   <script type="module" src="/src/scripts/main.js"></script>
+  <style>
+    body {
+      background-image: url('/images/import4-table.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    #game-container {
+      min-height: 80vh;
+      position: relative;
+    }
+    .player-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid rgba(212, 175, 55, 0.5);
+      object-fit: cover;
+    }
+    .card-in-hand {
+      width: 80px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border-radius: 8px;
+    }
+    .card-in-hand:hover {
+      transform: translateY(-10px);
+    }
+    .card-on-table {
+      width: 100px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+  </style>
 </head>
 <body class="text-white mystic-gradient min-h-screen">
   <div id="navbar"></div>
 
-  <main class="max-w-6xl mx-auto px-4 pt-14 pb-24 space-y-12">
-    <header class="grid md:grid-cols-[1.2fr,0.8fr] gap-8 items-center">
-      <div class="space-y-5">
-        <p class="text-xs uppercase tracking-[0.4rem] text-white/50">Tarot Card Game</p>
-        <h1 class="text-4xl font-serif gold-text">Cardamon Tarot Game</h1>
-        <p class="text-white/75 text-sm leading-relaxed max-w-2xl">
-          Cardamon is our cozy four-player Tarot trick-taking game. Play against three smart bots,
-          bid for the dog, and see whether you can command the table. The desktop version now features
-          the candlelit table backdrop you asked for.
+  <main id="game-container" class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Deck Selection Screen -->
+    <div id="deck-selection" class="flex flex-col items-center justify-center min-h-[70vh]">
+      <div class="card p-8 max-w-2xl backdrop-blur-xl" style="background: rgba(0,0,0,0.8);">
+        <h1 class="text-4xl font-serif gold-text mb-4 text-center">Cardamon Tarot Game</h1>
+        <p class="text-white/80 mb-8 text-center">
+          Choose your deck to begin the game. Play French Tarot with 3 AI opponents.
         </p>
-        <div class="flex flex-wrap gap-3">
-          <a class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/15 hover:bg-white/10 transition text-sm"
-             href="#how-to-play">
-            See How It Works
-            <span aria-hidden="true">↓</span>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="card p-4 cursor-pointer hover:border-white/30 transition" onclick="selectDeck('hippie_tarot')">
+            <img src="/tarot-reader/assets/cards/hippie_tarot/0Fool.png" alt="Hippie Tarot" class="w-full rounded-lg mb-3">
+            <h3 class="font-serif gold-text text-lg text-center">Hippie Tarot</h3>
+            <p class="text-white/60 text-sm text-center mt-2">Psychedelic retro vibes</p>
+            <a href="/products.html" class="block text-center text-xs text-white/40 hover:text-white/60 mt-2 transition">View in shop →</a>
+          </div>
+
+          <div class="card p-4 cursor-pointer hover:border-white/30 transition" onclick="selectDeck('best_simple')">
+            <img src="/tarot-reader/assets/cards/best_simple/0Fool.png" alt="Classic Tarot" class="w-full rounded-lg mb-3">
+            <h3 class="font-serif gold-text text-lg text-center">Classic Tarot</h3>
+            <p class="text-white/60 text-sm text-center mt-2">Traditional elegance</p>
+            <a href="/products.html" class="block text-center text-xs text-white/40 hover:text-white/60 mt-2 transition">View in shop →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Board (hidden initially) -->
+    <div id="game-board" class="hidden">
+      <!-- Top opponent -->
+      <div class="flex justify-center mb-8">
+        <div class="text-center">
+          <img id="player-top-avatar" src="/images/avatars/moses.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+          <div id="player-top-name" class="text-sm font-medium">Moses</div>
+          <div id="player-top-cards" class="text-xs text-white/60">18 cards</div>
+        </div>
+      </div>
+
+      <!-- Left and right opponents + center table -->
+      <div class="grid grid-cols-[200px,1fr,200px] gap-8 items-center mb-8">
+        <!-- Left opponent -->
+        <div class="text-center">
+          <img id="player-left-avatar" src="/images/avatars/lady_book.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+          <div id="player-left-name" class="text-sm font-medium">Lady Book</div>
+          <div id="player-left-cards" class="text-xs text-white/60">18 cards</div>
+        </div>
+
+        <!-- Center table (played cards) -->
+        <div id="trick-area" class="bg-black/30 rounded-3xl border border-white/20 p-8 min-h-[300px] flex items-center justify-center">
+          <div class="grid grid-cols-2 gap-8">
+            <div id="card-top" class="flex justify-center"></div>
+            <div id="card-left" class="flex justify-center"></div>
+            <div id="card-right" class="flex justify-center"></div>
+            <div id="card-bottom" class="flex justify-center"></div>
+          </div>
+        </div>
+
+        <!-- Right opponent -->
+        <div class="text-center">
+          <img id="player-right-avatar" src="/images/avatars/old_man.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+          <div id="player-right-name" class="text-sm font-medium">Old Man</div>
+          <div id="player-right-cards" class="text-xs text-white/60">18 cards</div>
+        </div>
+      </div>
+
+      <!-- Game status -->
+      <div id="game-status" class="text-center mb-6 text-lg font-medium gold-text"></div>
+
+      <!-- Player's hand (bottom) -->
+      <div class="flex flex-col items-center">
+        <div class="flex items-center gap-4 mb-4">
+          <img src="/images/avatars/hippie.png" alt="You" class="player-avatar">
+          <div>
+            <div class="font-medium text-lg">You</div>
+            <div id="player-score" class="text-sm text-white/60">Score: 0</div>
+          </div>
+        </div>
+        <div id="player-hand" class="flex flex-wrap justify-center gap-2 max-w-5xl"></div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen (hidden initially) -->
+    <div id="game-over" class="hidden flex flex-col items-center justify-center min-h-[70vh]">
+      <div class="card p-8 max-w-2xl backdrop-blur-xl text-center" style="background: rgba(0,0,0,0.8);">
+        <h2 class="text-3xl font-serif gold-text mb-4">Game Over</h2>
+        <div id="final-scores" class="mb-6"></div>
+        <p id="deck-promo" class="text-white/70 mb-4"></p>
+        <div class="flex gap-4 justify-center">
+          <button onclick="location.reload()" class="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 transition">
+            Play Again
+          </button>
+          <a id="buy-deck-link" href="/products.html" class="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 transition inline-block">
+            View Deck in Shop
           </a>
         </div>
       </div>
-      <div class="rounded-3xl overflow-hidden border border-white/15 shadow-mystic">
-        <img src="/images/import4-table.jpg" alt="Tarot cards on a wooden table with candle" class="w-full h-full object-cover" />
-      </div>
-    </header>
-
-    <section id="how-to-play">
-      <article class="card p-8 space-y-4 md:p-10">
-        <h2 class="text-2xl font-semibold">Highlights</h2>
-        <ul class="space-y-3 text-white/70 text-sm md:text-base">
-          <li>Bid for the dog, call trumps, and play through the full 78-card deck.</li>
-          <li>Three bot skill levels (Beginner, Intermediate, Expert) plus hint mode.</li>
-          <li>New candlelit table background sets the mood for midnight games.</li>
-          <li>Open Python source — tweak decks, artwork, and house rules.</li>
-        </ul>
-      </article>
-    </section>
+    </div>
   </main>
 
   <div id="footer"></div>
+
+  <script type="module" src="/src/scripts/cardamon-game.js"></script>
 </body>
 </html>
