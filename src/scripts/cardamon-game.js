@@ -115,12 +115,12 @@ function createDeck() {
   gameState.deck = [];
 
   // Map tarot suits to display names
-  const suits = ['cups', 'wands', 'swords', 'pentacles'];
+  const suits = ['cups', 'wands', 'swords', 'pent'];
   const suitNames = {
     cups: 'Cups',
     wands: 'Wands',
     swords: 'Swords',
-    pentacles: 'Pentacles'
+    pent: 'Pentacles'
   };
 
   // Map trump numbers to Major Arcana names
@@ -302,53 +302,53 @@ function displayHand() {
 
 // Show "Ready to Bid" button to give user time to review their hand
 function showReadyToBidButton() {
-  const overlay = document.createElement('div');
-  overlay.id = 'ready-to-bid-overlay';
-  overlay.style.cssText = `
+  const banner = document.createElement('div');
+  banner.id = 'ready-to-bid-banner';
+  banner.style.cssText = `
     position: fixed;
-    top: 50%;
+    top: 20px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     z-index: 9999;
     text-align: center;
     background: linear-gradient(135deg, #1a1625 0%, #2a2040 100%);
     border: 2px solid rgba(212, 175, 55, 0.6);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+    border-radius: 16px;
+    padding: 20px 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 20px;
   `;
 
-  overlay.innerHTML = `
-    <h2 style="color: rgb(212, 175, 55); font-size: 28px; margin-bottom: 20px; font-family: serif;">
-      Cards Dealt!
-    </h2>
-    <p style="color: rgba(255,255,255,0.8); margin-bottom: 30px; max-width: 400px;">
-      Review your hand below and click the button when you're ready to start bidding.
-    </p>
+  banner.innerHTML = `
+    <div style="color: rgba(255,255,255,0.9); font-size: 16px;">
+      <strong style="color: rgb(212, 175, 55);">Cards Dealt!</strong> Review your hand below
+    </div>
     <button id="start-bidding-btn" style="
-      padding: 20px 40px;
-      border-radius: 12px;
-      background: rgba(212, 175, 55, 0.8);
+      padding: 12px 28px;
+      border-radius: 10px;
+      background: rgba(212, 175, 55, 0.9);
       border: 2px solid rgb(212, 175, 55);
       color: #1a1625;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+      transition: all 0.2s;
+      white-space: nowrap;
     " onmouseover="this.style.background='rgb(212, 175, 55)'; this.style.transform='scale(1.05)'"
-       onmouseout="this.style.background='rgba(212, 175, 55, 0.8)'; this.style.transform='scale(1)'">
-      Ready to Bid
+       onmouseout="this.style.background='rgba(212, 175, 55, 0.9)'; this.style.transform='scale(1)'">
+      Ready to Bid →
     </button>
   `;
 
-  document.body.appendChild(overlay);
+  document.body.appendChild(banner);
 
   // Add click handler
   document.getElementById('start-bidding-btn').addEventListener('click', () => {
-    overlay.remove();
-    // Small delay to let the overlay disappear
-    setTimeout(() => startBiddingPhase(), 300);
+    banner.remove();
+    // Start bidding immediately
+    startBiddingPhase();
   });
 }
 
@@ -358,9 +358,6 @@ function startBiddingPhase() {
 
   gameState.bids = [];
   gameState.currentPlayer = 0;
-
-  // CRITICAL: Scroll to top IMMEDIATELY
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // Update status
   updateGameStatus("Bidding Phase");
@@ -394,9 +391,6 @@ function promptNextBid() {
 // Prompt human player to bid
 function promptHumanBid() {
   console.log("promptHumanBid called!");
-
-  // FORCE scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // Create overlay
   const overlay = document.createElement('div');
