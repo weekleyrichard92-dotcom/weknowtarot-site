@@ -174,6 +174,7 @@ function initializeGame() {
     currentPlayer: 0,
     trickNumber: 0,
     takerIndex: -1,
+    trumpBroken: false,  // Track if trump has been played yet
     deck: selectedDeck
   };
 
@@ -228,36 +229,64 @@ async function biddingPhase() {
   let highestBid = 0;
   let highestBidder = -1;
 
-  // Simple bidding: each AI makes a random bid
+  // Each player bids in order
   for (let i = 0; i < gameState.players.length; i++) {
     const player = gameState.players[i];
     let bid = 0;
 
     if (!player.isHuman) {
-      // AI bids based on trump count
+      // AI bids based on trump count and high cards
       const trumpCount = player.hand.filter(c => c.isTrump).length;
-      bid = trumpCount > 10 ? Math.floor(Math.random() * 3) + 1 : 0;
+      const highCards = player.hand.filter(c => c.value >= 2.5).length;
+
+      // Bid if strong hand (lots of trumps or high cards)
+      if (trumpCount >= 8 && highCards >= 5) {
+        bid = Math.min(highestBid + 1, 4); // Bid one higher
+      } else if (trumpCount >= 10) {
+        bid = Math.min(highestBid + 1, 4);
+      }
     } else {
       // For now, human always passes (bid 0)
+      // TODO: Add human bidding UI
       bid = 0;
     }
 
     if (bid > highestBid) {
       highestBid = bid;
       highestBidder = i;
+      updateStatus(`${player.name} bids ${bid}!`);
+      await sleep(800);
     }
   }
 
   gameState.takerIndex = highestBidder;
 
   if (highestBidder >= 0) {
-    updateStatus(`${gameState.players[highestBidder].name} won the bid!`);
-
-    // Give dog to the taker
-    gameState.players[highestBidder].hand.push(...gameState.dog);
-    sortHand(gameState.players[highestBidder].hand);
-
+    const taker = gameState.players[highestBidder];
+    updateStatus(`${taker.name} won the bid with ${highestBid}!`);
     await sleep(1500);
+
+    // Ask taker if they want the dog
+    if (taker.isHuman) {
+      // TODO: Add UI for human to accept/decline dog
+      updateStatus('You won the bid! Taking the dog...');
+      taker.hand.push(...gameState.dog);
+      sortHand(taker.hand);
+      await sleep(1500);
+    } else {
+      // AI decides whether to take the dog
+      const trumpCount = taker.hand.filter(c => c.isTrump).length;
+      const takeDog = trumpCount < 12; // Take dog if not enough trumps
+
+      if (takeDog) {
+        updateStatus(`${taker.name} takes the dog!`);
+        taker.hand.push(...gameState.dog);
+        sortHand(taker.hand);
+      } else {
+        updateStatus(`${taker.name} declines the dog.`);
+      }
+      await sleep(1500);
+    }
   } else {
     updateStatus('Everyone passed. Starting play...');
     await sleep(1500);
@@ -279,6 +308,15 @@ async function playTrick() {
     gameState.currentPlayer = playerIndex;
 
     await playCard(playerIndex);
+
+    // Check if trump was played (breaks trump)
+    const lastCard = gameState.currentTrick[gameState.currentTrick.length - 1].card;
+    if (lastCard.isTrump && !gameState.trumpBroken) {
+      gameState.trumpBroken = true;
+      updateStatus('Trump has been broken!');
+      await sleep(1000);
+    }
+
     await sleep(800);
   }
 
@@ -333,7 +371,14 @@ function chooseAICard(player) {
 // Get legal cards to play
 function getLegalCards(hand) {
   if (gameState.currentTrick.length === 0) {
-    // Leading: can play any card
+    // Leading: can play any card EXCEPT trump (unless broken or only trumps left)
+    if (!gameState.trumpBroken) {
+      const nonTrumps = hand.filter(c => !c.isTrump);
+      // Can only lead trump if you have no other cards
+      if (nonTrumps.length > 0) {
+        return nonTrumps;
+      }
+    }
     return hand;
   }
 
