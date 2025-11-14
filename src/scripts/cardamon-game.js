@@ -114,51 +114,96 @@ function initializeGame() {
 function createDeck() {
   gameState.deck = [];
 
-  const suits = ['clubs', 'diamonds', 'hearts', 'spades'];
-  const suitNames = { clubs: 'Clubs', diamonds: 'Diamonds', hearts: 'Hearts', spades: 'Spades' };
+  // Map tarot suits to display names
+  const suits = ['cups', 'wands', 'swords', 'pentacles'];
+  const suitNames = {
+    cups: 'Cups',
+    wands: 'Wands',
+    swords: 'Swords',
+    pentacles: 'Pentacles'
+  };
 
-  // Regular suits (1-10, Jack, Knight, Queen, King)
+  // Map trump numbers to Major Arcana names
+  const trumpNames = {
+    1: 'Magician',
+    2: 'High_Priestess',
+    3: 'Empress',
+    4: 'Emperor',
+    5: 'Hierophant',
+    6: 'Lovers',
+    7: 'Chariot',
+    8: 'Strength',
+    9: 'Hermit',
+    10: 'Wheel_of_Fortune',
+    11: 'Justice',
+    12: 'Hanged_Man',
+    13: 'Death',
+    14: 'Temperance',
+    15: 'Devil',
+    16: 'Tower',
+    17: 'Star',
+    18: 'Moon',
+    19: 'Sun',
+    20: 'Judgement',
+    21: 'World'
+  };
+
+  // Create minor arcana (suits 1-10, page, knight, queen, king)
   for (const suit of suits) {
-    for (let rank = 1; rank <= 14; rank++) {
-      let rankName;
-      if (rank === 1) rankName = 'Ace';
-      else if (rank === 11) rankName = 'Jack';
-      else if (rank === 12) rankName = 'Knight';
-      else if (rank === 13) rankName = 'Queen';
-      else if (rank === 14) rankName = 'King';
-      else rankName = rank.toString();
-
+    // Number cards 1-10
+    for (let rank = 1; rank <= 10; rank++) {
+      const rankPadded = rank.toString().padStart(2, '0');
       gameState.deck.push({
         id: `${suit}_${rank}`,
         suit: suit,
         rank: rank,
-        name: `${rankName} of ${suitNames[suit]}`,
-        points: (rank >= 11) ? 5 : 0.5,
+        name: `${rank} of ${suitNames[suit]}`,
+        points: 0.5,
         isTrump: false,
-        image: `/tarot-reader/assets/cards/${selectedDeck}/${rank}${suitNames[suit]}.png`
+        image: `/tarot-reader/assets/cards/${selectedDeck}/${suit}_${rankPadded}.png`
+      });
+    }
+
+    // Court cards: Page (11), Knight (12), Queen (13), King (14)
+    const courtCards = [
+      { rank: 11, name: 'page', display: 'Page', points: 1.5 },
+      { rank: 12, name: 'knight', display: 'Knight', points: 2.5 },
+      { rank: 13, name: 'queen', display: 'Queen', points: 3.5 },
+      { rank: 14, name: 'king', display: 'King', points: 4.5 }
+    ];
+
+    for (const court of courtCards) {
+      gameState.deck.push({
+        id: `${suit}_${court.rank}`,
+        suit: suit,
+        rank: court.rank,
+        name: `${court.display} of ${suitNames[suit]}`,
+        points: court.points,
+        isTrump: false,
+        image: `/tarot-reader/assets/cards/${selectedDeck}/${suit}_${court.name}.png`
       });
     }
   }
 
-  // Trumps (1-21)
+  // Create Major Arcana as trumps (1-21)
   for (let i = 1; i <= 21; i++) {
     gameState.deck.push({
       id: `trump_${i}`,
       suit: 'trump',
       rank: i,
-      name: `Trump ${i}`,
+      name: `Trump ${i} (${trumpNames[i].replace('_', ' ')})`,
       points: (i === 1 || i === 21) ? 4.5 : 0.5,
       isTrump: true,
-      image: `/tarot-reader/assets/cards/${selectedDeck}/${i}Trumps.png`
+      image: `/tarot-reader/assets/cards/${selectedDeck}/${i}${trumpNames[i]}.png`
     });
   }
 
-  // The Excuse (Fool)
+  // The Excuse (Fool) - rank 0
   gameState.deck.push({
     id: 'excuse',
     suit: 'excuse',
     rank: 0,
-    name: 'The Excuse',
+    name: 'The Fool (Excuse)',
     points: 4.5,
     isTrump: false,
     isExcuse: true,
