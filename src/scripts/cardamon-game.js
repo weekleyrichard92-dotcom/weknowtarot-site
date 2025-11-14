@@ -1,4 +1,5 @@
 // Cardamon French Tarot Game
+alert("CARDAMON SCRIPT IS LOADING!");
 console.log("Cardamon game script loaded");
 
 // Game state
