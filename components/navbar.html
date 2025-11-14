@@ -1,13 +1,99 @@
 <nav class="w-full sticky top-0 z-50 bg-black/50 backdrop-blur border-b border-white/10">
-  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-    <a href="/index.html" class="flex items-center gap-2">
-      <img src="/src/assets/images/logo-placeholder.png" alt="We Know Tarot" class="h-8 w-8 rounded" />
-      <span class="text-lg font-serif tracking-wide gold-text">We Know Tarot</span>
+  <div class="max-w-6xl mx-auto px-5 py-4 flex items-center gap-4">
+    <a href="/" class="flex items-center gap-4 shrink-0">
+      <img src="/images/logo.png" alt="We Know Tarot" class="object-contain" style="width:96px;height:auto;" />
+      <span class="text-2xl font-serif tracking-wide gold-text whitespace-nowrap">We Know Tarot</span>
     </a>
-    <ul class="flex items-center gap-6 text-sm">
-      <li><a class="hover:text-white/80" href="/products.html">Products</a></li>
-      <li><a class="hover:text-white/80" href="/collections.html">Collections</a></li>
-      <li><a class="hover:text-white/80" href="/app.html">App</a></li>
-    </ul>
+
+    <div class="relative ml-auto z-50">
+      <button
+        id="nav-menu-button"
+        type="button"
+        class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/10 hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-black text-sm font-medium tracking-wide transition"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Menu
+        <svg data-menu-icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 transition-transform duration-200">
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.095l3.71-3.864a.75.75 0 011.08 1.04l-4.24 4.41a.75.75 0 01-1.08 0l-4.24-4.41a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+        </svg>
+      </button>
+
+      <div
+        id="nav-menu-panel" role="menu" tabIndex="-1"
+        class="w-60 rounded-2xl border border-white/15 backdrop-blur-xl shadow-xl hidden"
+        style="min-width: 15rem; max-width: min(17rem, 90vw); background-color: rgba(32, 34, 42, 0.82);"
+      >
+        <ul role="menu" class="py-2 text-sm text-white/90">
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/">Home</a></li>
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/products.html">Products</a></li>
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/collections.html">Collections</a></li>
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/app.html">App</a></li>
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/tarot-game.html">Tarot Game</a></li>
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/digital-products.html">Digital Products</a></li>
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/blog.html">Blog</a></li>
+          <li><a class="block px-4 py-2 hover:bg-white/10 rounded-xl" href="/checkout.html">Checkout</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </nav>
+
+<script>
+(function() {
+  // Wait for DOM to be ready
+  const button = document.getElementById('nav-menu-button');
+  const panel = document.getElementById('nav-menu-panel');
+  const icon = document.querySelector('[data-menu-icon]');
+
+  if (!button || !panel) return;
+
+  let isOpen = false;
+
+  function toggleMenu() {
+    isOpen = !isOpen;
+
+    if (isOpen) {
+      panel.classList.remove('hidden');
+      panel.style.position = 'absolute';
+      panel.style.right = '0';
+      panel.style.top = 'calc(100% + 0.5rem)';
+      button.setAttribute('aria-expanded', 'true');
+      if (icon) icon.style.transform = 'rotate(180deg)';
+    } else {
+      panel.classList.add('hidden');
+      button.setAttribute('aria-expanded', 'false');
+      if (icon) icon.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  function closeMenu() {
+    if (isOpen) {
+      isOpen = false;
+      panel.classList.add('hidden');
+      button.setAttribute('aria-expanded', 'false');
+      if (icon) icon.style.transform = 'rotate(0deg)';
+    }
+  }
+
+  // Toggle on button click
+  button.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!panel.contains(e.target) && e.target !== button) {
+      closeMenu();
+    }
+  });
+
+  // Close when pressing Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeMenu();
+    }
+  });
+})();
+</script>
