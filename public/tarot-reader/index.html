@@ -9,13 +9,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script type="module" crossorigin src="/tarot-reader/assets/index-BkGy-W56.js"></script>
     <link rel="stylesheet" crossorigin href="/tarot-reader/assets/index.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      /* Add navbar/footer styles */
+      /* Main site styles */
       .gold-text { color: #d4af37; }
-      nav { font-family: 'Cinzel', serif; }
+      .moon-text { color: #e0e7ff; }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #1a1625 0%, #0a0612 50%, #1a1625 100%);
+        min-height: 100vh;
+      }
+      nav, footer {
+        font-family: 'Cinzel', serif;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+      }
+      .hidden { display: none; }
     </style>
   </head>
-  <body>
+  <body class="text-white">
     <div id="navbar"></div>
     <div id="root"></div>
     <div id="footer"></div>
