@@ -7,22 +7,75 @@
   <script type="module" src="/src/scripts/main.js"></script>
   <style>
     body {
-      background-image: url('/images/import4-table.jpg') !important;
-      background-size: cover !important;
-      background-position: center !important;
-      background-attachment: fixed !important;
-      background-color: #1a1625 !important;
+      background: linear-gradient(135deg, #1a1625 0%, #0a0612 50%, #1a1625 100%);
     }
     #game-container {
       min-height: 80vh;
       position: relative;
     }
-    .player-avatar {
-      width: 120px;
-      height: 120px;
+    .table-surface {
+      background-image: url('/images/import4-table.jpg');
+      background-size: cover;
+      background-position: center;
       border-radius: 50%;
-      border: 3px solid rgba(212, 175, 55, 0.5);
+      width: 800px;
+      height: 800px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    }
+    .player-seat {
+      position: absolute;
+    }
+    .player-seat.top {
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .player-seat.left {
+      left: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .player-seat.right {
+      right: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .player-seat.bottom {
+      bottom: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .player-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid rgba(212, 175, 55, 0.6);
       object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .card-play-area {
+      position: absolute;
+    }
+    .card-play-area.top {
+      top: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .card-play-area.left {
+      left: 150px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .card-play-area.right {
+      right: 150px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .card-play-area.bottom {
+      bottom: 150px;
+      left: 50%;
+      transform: translateX(-50%);
     }
     .card-in-hand {
       width: 80px;
@@ -112,48 +165,51 @@
     </div>
 
     <!-- Game Board (hidden initially) -->
-    <div id="game-board" class="hidden">
-      <!-- Center table (played cards) -->
-      <div id="trick-area" class="bg-black/30 rounded-3xl border border-white/20 p-8 min-h-[350px] flex items-center justify-center mb-8">
-        <div class="grid grid-cols-2 gap-12">
-          <div id="card-0" class="flex justify-center"></div>
-          <div id="card-1" class="flex justify-center"></div>
-          <div id="card-2" class="flex justify-center"></div>
-          <div id="card-3" class="flex justify-center"></div>
-        </div>
-      </div>
-
+    <div id="game-board" class="hidden flex flex-col items-center gap-8 py-8">
       <!-- Game status -->
-      <div id="game-status" class="text-center mb-6 text-lg font-medium gold-text"></div>
+      <div id="game-status" class="text-lg font-medium gold-text"></div>
 
-      <!-- Player's hand (bottom) -->
-      <div class="flex flex-col items-center">
-        <div id="player-hand" class="flex flex-wrap justify-center gap-2 max-w-6xl mb-6"></div>
-
-        <!-- All 4 players at bottom -->
-        <div class="grid grid-cols-4 gap-8 max-w-4xl">
-          <div class="text-center">
-            <img id="player-0-avatar" src="/images/avatars/hippie.png" alt="You" class="player-avatar mx-auto mb-2">
-            <div id="player-0-name" class="font-medium">You</div>
-            <div id="player-0-cards" class="text-xs text-white/60">18 cards</div>
-          </div>
-          <div class="text-center">
-            <img id="player-1-avatar" src="/images/avatars/moses.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+      <!-- Table with players positioned around it -->
+      <div class="flex justify-center items-center" style="min-height: 900px;">
+        <div class="table-surface">
+          <!-- Top player (opponent 1) -->
+          <div class="player-seat top text-center">
+            <img id="player-1-avatar" src="/images/avatars/moses.png" alt="Opponent" class="player-avatar mx-auto mb-1">
             <div id="player-1-name" class="text-sm font-medium">Moses</div>
             <div id="player-1-cards" class="text-xs text-white/60">18 cards</div>
           </div>
-          <div class="text-center">
-            <img id="player-2-avatar" src="/images/avatars/lady_book.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+
+          <!-- Left player (opponent 2) -->
+          <div class="player-seat left text-center">
+            <img id="player-2-avatar" src="/images/avatars/lady_book.png" alt="Opponent" class="player-avatar mx-auto mb-1">
             <div id="player-2-name" class="text-sm font-medium">Lady Book</div>
             <div id="player-2-cards" class="text-xs text-white/60">18 cards</div>
           </div>
-          <div class="text-center">
-            <img id="player-3-avatar" src="/images/avatars/old_man.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+
+          <!-- Right player (opponent 3) -->
+          <div class="player-seat right text-center">
+            <img id="player-3-avatar" src="/images/avatars/old_man.png" alt="Opponent" class="player-avatar mx-auto mb-1">
             <div id="player-3-name" class="text-sm font-medium">Old Man</div>
             <div id="player-3-cards" class="text-xs text-white/60">18 cards</div>
           </div>
+
+          <!-- Bottom player (you) -->
+          <div class="player-seat bottom text-center">
+            <img id="player-0-avatar" src="/images/avatars/hippie.png" alt="You" class="player-avatar mx-auto mb-1">
+            <div id="player-0-name" class="font-medium">You</div>
+            <div id="player-0-cards" class="text-xs text-white/60">18 cards</div>
+          </div>
+
+          <!-- Card play areas on table -->
+          <div class="card-play-area top" id="card-1"></div>
+          <div class="card-play-area left" id="card-2"></div>
+          <div class="card-play-area right" id="card-3"></div>
+          <div class="card-play-area bottom" id="card-0"></div>
         </div>
       </div>
+
+      <!-- Your hand at the very bottom -->
+      <div id="player-hand" class="flex flex-wrap justify-center gap-2 max-w-6xl"></div>
     </div>
 
     <!-- Game Over Screen (hidden initially) -->
