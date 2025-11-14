@@ -362,12 +362,7 @@ function waitForHumanCard() {
 
     // Get all card wrapper elements from both rows
     const handElement = document.getElementById('player-hand');
-    const rows = handElement.querySelectorAll('.hand-row');
-    const allCardWrappers = [];
-
-    rows.forEach(row => {
-      row.querySelectorAll('div').forEach(wrapper => allCardWrappers.push(wrapper));
-    });
+    const allCardWrappers = handElement.querySelectorAll('.card-wrapper');
 
     // Add click handlers to legal cards
     for (let i = 0; i < player.hand.length; i++) {
@@ -534,7 +529,7 @@ function updateUI() {
   row1.className = 'hand-row';
   hand.slice(0, midpoint).forEach(card => {
     const cardWrapper = document.createElement('div');
-    cardWrapper.style.position = 'relative';
+    cardWrapper.className = 'card-wrapper';
 
     const img = document.createElement('img');
     img.src = card.image;
@@ -555,7 +550,7 @@ function updateUI() {
   row2.className = 'hand-row';
   hand.slice(midpoint).forEach(card => {
     const cardWrapper = document.createElement('div');
-    cardWrapper.style.position = 'relative';
+    cardWrapper.className = 'card-wrapper';
 
     const img = document.createElement('img');
     img.src = card.image;
