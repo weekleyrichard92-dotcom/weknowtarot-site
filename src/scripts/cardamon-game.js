@@ -76,7 +76,14 @@ function getCardImage(suit, rank) {
   if (suit === 'trump') {
     return `/tarot-reader/assets/cards/${selectedDeck}/${rank}.png`;
   } else {
-    return `/tarot-reader/assets/cards/${selectedDeck}/${suit}_${rank}.png`;
+    // Different decks have different naming conventions
+    if (selectedDeck === 'hippie_tarot') {
+      // hippie_tarot uses: queen_swords.png (rank_suit)
+      return `/tarot-reader/assets/cards/${selectedDeck}/${rank}_${suit}.png`;
+    } else {
+      // best_simple uses: swords_queen.png (suit_rank)
+      return `/tarot-reader/assets/cards/${selectedDeck}/${suit}_${rank}.png`;
+    }
   }
 }
 
