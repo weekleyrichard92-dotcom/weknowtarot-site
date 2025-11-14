@@ -360,32 +360,40 @@ function waitForHumanCard() {
     const player = gameState.players[0];
     const legalCards = getLegalCards(player.hand);
 
-    // Add click handlers to legal cards
+    // Get all card wrapper elements from both rows
     const handElement = document.getElementById('player-hand');
-    const cardElements = handElement.children;
+    const rows = handElement.querySelectorAll('.hand-row');
+    const allCardWrappers = [];
 
-    for (let i = 0; i < cardElements.length; i++) {
-      const cardElement = cardElements[i];
+    rows.forEach(row => {
+      row.querySelectorAll('div').forEach(wrapper => allCardWrappers.push(wrapper));
+    });
+
+    // Add click handlers to legal cards
+    for (let i = 0; i < player.hand.length; i++) {
       const card = player.hand[i];
+      const cardWrapper = allCardWrappers[i];
+      const cardImg = cardWrapper.querySelector('.card-in-hand');
 
       if (legalCards.includes(card)) {
-        cardElement.style.opacity = '1';
-        cardElement.style.cursor = 'pointer';
-        cardElement.onclick = () => {
+        cardImg.style.opacity = '1';
+        cardImg.style.cursor = 'pointer';
+        cardWrapper.onclick = () => {
           player.hand.splice(i, 1);
           gameState.currentTrick.push({ card, playerIndex: 0 });
 
           // Remove click handlers
-          for (let el of cardElements) {
-            el.onclick = null;
-            el.style.opacity = '1';
-          }
+          allCardWrappers.forEach(wrapper => {
+            wrapper.onclick = null;
+            const img = wrapper.querySelector('.card-in-hand');
+            if (img) img.style.opacity = '1';
+          });
 
           resolve();
         };
       } else {
-        cardElement.style.opacity = '0.5';
-        cardElement.style.cursor = 'not-allowed';
+        cardImg.style.opacity = '0.5';
+        cardImg.style.cursor = 'not-allowed';
       }
     }
   });
@@ -455,19 +463,116 @@ function endGame() {
   document.getElementById('deck-promo').textContent = `Enjoyed playing with the ${deckName} deck?`;
 }
 
+// Get readable card name for tooltip
+function getCardName(card) {
+  if (card.isTrump) {
+    // Trump cards
+    const trumpNames = {
+      '0Fool': 'The Fool',
+      '1Magician': 'The Magician',
+      '2High_Priestess': 'The High Priestess',
+      '3Empress': 'The Empress',
+      '4Emperor': 'The Emperor',
+      '5Hierophant': 'The Hierophant',
+      '6Lovers': 'The Lovers',
+      '7Chariot': 'The Chariot',
+      '8Strength': 'Strength',
+      '9Hermit': 'The Hermit',
+      '10Wheel_of_Fortune': 'Wheel of Fortune',
+      '11Justice': 'Justice',
+      '12Hanged_Man': 'The Hanged Man',
+      '13Death': 'Death',
+      '14Temperance': 'Temperance',
+      '15Devil': 'The Devil',
+      '16Tower': 'The Tower',
+      '17Star': 'The Star',
+      '18Moon': 'The Moon',
+      '19Sun': 'The Sun',
+      '20Judgement': 'Judgement',
+      '21World': 'The World'
+    };
+    return trumpNames[card.rank] || card.rank;
+  } else {
+    // Suited cards
+    const rankNames = {
+      '01': 'Ace',
+      '02': 'Two',
+      '03': 'Three',
+      '04': 'Four',
+      '05': 'Five',
+      '06': 'Six',
+      '07': 'Seven',
+      '08': 'Eight',
+      '09': 'Nine',
+      '10': 'Ten',
+      'page': 'Page',
+      'knight': 'Knight',
+      'queen': 'Queen',
+      'king': 'King'
+    };
+    const suitNames = {
+      'swords': 'Swords',
+      'pent': 'Pentacles',
+      'cups': 'Cups',
+      'wands': 'Wands'
+    };
+    return `${rankNames[card.rank]} of ${suitNames[card.suit]}`;
+  }
+}
+
 // Update UI
 function updateUI() {
-  // Update player hand
+  // Update player hand - display in 2 rows of 9 cards each
   const handElement = document.getElementById('player-hand');
   handElement.innerHTML = '';
 
-  gameState.players[0].hand.forEach(card => {
+  const hand = gameState.players[0].hand;
+  const midpoint = Math.ceil(hand.length / 2);
+
+  // Create first row
+  const row1 = document.createElement('div');
+  row1.className = 'hand-row';
+  hand.slice(0, midpoint).forEach(card => {
+    const cardWrapper = document.createElement('div');
+    cardWrapper.style.position = 'relative';
+
     const img = document.createElement('img');
     img.src = card.image;
     img.className = 'card-in-hand';
     img.alt = `${card.rank} of ${card.suit}`;
-    handElement.appendChild(img);
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'card-tooltip';
+    tooltip.textContent = getCardName(card);
+
+    cardWrapper.appendChild(img);
+    cardWrapper.appendChild(tooltip);
+    row1.appendChild(cardWrapper);
   });
+
+  // Create second row
+  const row2 = document.createElement('div');
+  row2.className = 'hand-row';
+  hand.slice(midpoint).forEach(card => {
+    const cardWrapper = document.createElement('div');
+    cardWrapper.style.position = 'relative';
+
+    const img = document.createElement('img');
+    img.src = card.image;
+    img.className = 'card-in-hand';
+    img.alt = `${card.rank} of ${card.suit}`;
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'card-tooltip';
+    tooltip.textContent = getCardName(card);
+
+    cardWrapper.appendChild(img);
+    cardWrapper.appendChild(tooltip);
+    row2.appendChild(cardWrapper);
+  });
+
+  handElement.appendChild(row1);
+  handElement.appendChild(row2);
 
   // Update all players' info
   gameState.players.forEach((player, i) => {

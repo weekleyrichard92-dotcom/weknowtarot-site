@@ -47,12 +47,16 @@
       transform: translateX(-50%);
     }
     .player-avatar {
-      width: 100px;
-      height: 100px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       border: 3px solid rgba(212, 175, 55, 0.6);
       object-fit: cover;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    #avatar-selection .player-avatar {
+      width: 100px;
+      height: 100px;
     }
     .card-play-area {
       position: absolute;
@@ -78,13 +82,46 @@
       transform: translateX(-50%);
     }
     .card-in-hand {
-      width: 80px;
+      width: 140px;
       cursor: pointer;
       transition: transform 0.2s;
       border-radius: 8px;
+      position: relative;
     }
     .card-in-hand:hover {
       transform: translateY(-10px);
+    }
+    .card-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      margin-bottom: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      z-index: 100;
+    }
+    .card-in-hand:hover .card-tooltip {
+      opacity: 1;
+    }
+    .hand-container {
+      display: grid;
+      grid-template-rows: repeat(2, auto);
+      gap: 12px;
+      justify-content: center;
+    }
+    .hand-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
     }
     .card-on-table {
       width: 100px;
@@ -98,7 +135,7 @@
 
   <main id="game-container" class="max-w-7xl mx-auto px-4 py-8">
     <!-- Avatar Selection Screen -->
-    <div id="avatar-selection" class="flex flex-col items-center justify-center min-h-[70vh]">
+    <div id="avatar-selection" class="flex flex-col items-center justify-center min-h-[70vh] avatar-selection">
       <div class="card p-8 max-w-4xl backdrop-blur-xl" style="background: rgba(0,0,0,0.8);">
         <h1 class="text-4xl font-serif gold-text mb-4 text-center">Choose Your Opponents</h1>
         <p class="text-white/80 mb-8 text-center">
@@ -209,7 +246,7 @@
       </div>
 
       <!-- Your hand at the very bottom -->
-      <div id="player-hand" class="flex flex-wrap justify-center gap-2 max-w-6xl"></div>
+      <div id="player-hand" class="hand-container max-w-7xl"></div>
     </div>
 
     <!-- Game Over Screen (hidden initially) -->
