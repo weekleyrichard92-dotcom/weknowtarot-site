@@ -2,7 +2,16 @@
 // Based on the import4.py Python implementation
 
 let selectedDeck = '';
+let selectedOpponents = [];
 let gameState = null;
+
+const AVATAR_NAMES = {
+  'hippie': 'Hippie',
+  'lady': 'Lady',
+  'lady_book': 'Lady Book',
+  'moses': 'Moses',
+  'old_man': 'Old Man'
+};
 
 // Card ranks and values
 const SUITS = ['swords', 'pent', 'cups', 'wands'];
@@ -30,6 +39,44 @@ const CARD_VALUES = {
   '21World': 4.5,
   '1Magician': 4.5,
   '0Fool': 4.5
+};
+
+// Avatar selection
+window.toggleOpponent = function(avatar, name) {
+  const index = selectedOpponents.findIndex(opp => opp.avatar === avatar);
+  const element = document.querySelector(`[data-avatar="${avatar}"] img`);
+
+  if (index >= 0) {
+    // Deselect
+    selectedOpponents.splice(index, 1);
+    element.classList.remove('border-gold');
+    element.style.borderColor = 'transparent';
+  } else {
+    // Select (max 3)
+    if (selectedOpponents.length < 3) {
+      selectedOpponents.push({ avatar, name });
+      element.style.borderColor = 'rgba(212, 175, 55, 0.8)';
+    }
+  }
+
+  // Update UI
+  const message = document.getElementById('selection-message');
+  const button = document.getElementById('continue-to-deck');
+
+  if (selectedOpponents.length === 3) {
+    message.textContent = 'Perfect! Click continue to select your deck.';
+    message.classList.add('gold-text');
+    button.disabled = false;
+  } else {
+    message.textContent = `Select ${3 - selectedOpponents.length} more opponent${3 - selectedOpponents.length === 1 ? '' : 's'}`;
+    message.classList.remove('gold-text');
+    button.disabled = true;
+  }
+};
+
+window.continueToDecks = function() {
+  document.getElementById('avatar-selection').classList.add('hidden');
+  document.getElementById('deck-selection').classList.remove('hidden');
 };
 
 // Deck selection
@@ -102,13 +149,25 @@ function shuffleDeck(deck) {
 function initializeGame() {
   const deck = shuffleDeck(createDeck());
 
+  // Create players array with human player first, then selected opponents
+  const players = [
+    { name: 'You', hand: [], tricks: 0, score: 0, isHuman: true, avatar: 'hippie' }
+  ];
+
+  // Add selected opponents
+  selectedOpponents.forEach(opp => {
+    players.push({
+      name: opp.name,
+      hand: [],
+      tricks: 0,
+      score: 0,
+      isHuman: false,
+      avatar: opp.avatar
+    });
+  });
+
   gameState = {
-    players: [
-      { name: 'You', hand: [], tricks: 0, score: 0, isHuman: true, position: 'bottom' },
-      { name: 'Moses', hand: [], tricks: 0, score: 0, isHuman: false, position: 'top' },
-      { name: 'Lady Book', hand: [], tricks: 0, score: 0, isHuman: false, position: 'left' },
-      { name: 'Old Man', hand: [], tricks: 0, score: 0, isHuman: false, position: 'right' }
-    ],
+    players: players,
     dog: [],
     currentTrick: [],
     trickLeader: 0,
@@ -410,9 +469,22 @@ function updateUI() {
     handElement.appendChild(img);
   });
 
-  // Update card counts
+  // Update all players' info
   gameState.players.forEach((player, i) => {
-    const countEl = document.getElementById(`player-${player.position}-cards`);
+    // Update avatar
+    const avatarEl = document.getElementById(`player-${i}-avatar`);
+    if (avatarEl) {
+      avatarEl.src = `/images/avatars/${player.avatar}.png`;
+    }
+
+    // Update name
+    const nameEl = document.getElementById(`player-${i}-name`);
+    if (nameEl) {
+      nameEl.textContent = player.name;
+    }
+
+    // Update card count
+    const countEl = document.getElementById(`player-${i}-cards`);
     if (countEl) {
       countEl.textContent = `${player.hand.length} cards`;
     }
@@ -424,20 +496,22 @@ function updateUI() {
 
 // Update cards on the table
 function updateTrickArea() {
-  ['top', 'left', 'right', 'bottom'].forEach(pos => {
-    const el = document.getElementById(`card-${pos}`);
-    el.innerHTML = '';
-  });
+  // Clear all card positions
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById(`card-${i}`);
+    if (el) el.innerHTML = '';
+  }
 
+  // Add cards from current trick
   gameState.currentTrick.forEach(play => {
-    const player = gameState.players[play.playerIndex];
-    const el = document.getElementById(`card-${player.position}`);
-
-    const img = document.createElement('img');
-    img.src = play.card.image;
-    img.className = 'card-on-table';
-    img.alt = `${play.card.rank} of ${play.card.suit}`;
-    el.appendChild(img);
+    const el = document.getElementById(`card-${play.playerIndex}`);
+    if (el) {
+      const img = document.createElement('img');
+      img.src = play.card.image;
+      img.className = 'card-on-table';
+      img.alt = `${play.card.rank} of ${play.card.suit}`;
+      el.appendChild(img);
+    }
   });
 }
 

@@ -18,8 +18,8 @@
       position: relative;
     }
     .player-avatar {
-      width: 80px;
-      height: 80px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       border: 3px solid rgba(212, 175, 55, 0.5);
       object-fit: cover;
@@ -44,8 +44,49 @@
   <div id="navbar"></div>
 
   <main id="game-container" class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Avatar Selection Screen -->
+    <div id="avatar-selection" class="flex flex-col items-center justify-center min-h-[70vh]">
+      <div class="card p-8 max-w-4xl backdrop-blur-xl" style="background: rgba(0,0,0,0.8);">
+        <h1 class="text-4xl font-serif gold-text mb-4 text-center">Choose Your Opponents</h1>
+        <p class="text-white/80 mb-8 text-center">
+          Select 3 opponents to play against (click to select/deselect)
+        </p>
+
+        <div class="grid grid-cols-5 gap-4 mb-6">
+          <div class="text-center cursor-pointer opponent-choice" data-avatar="hippie" onclick="toggleOpponent('hippie', 'Hippie')">
+            <img src="/images/avatars/hippie.png" alt="Hippie" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="text-sm">Hippie</div>
+          </div>
+          <div class="text-center cursor-pointer opponent-choice" data-avatar="lady" onclick="toggleOpponent('lady', 'Lady')">
+            <img src="/images/avatars/lady.png" alt="Lady" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="text-sm">Lady</div>
+          </div>
+          <div class="text-center cursor-pointer opponent-choice" data-avatar="lady_book" onclick="toggleOpponent('lady_book', 'Lady Book')">
+            <img src="/images/avatars/lady_book.png" alt="Lady Book" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="text-sm">Lady Book</div>
+          </div>
+          <div class="text-center cursor-pointer opponent-choice" data-avatar="moses" onclick="toggleOpponent('moses', 'Moses')">
+            <img src="/images/avatars/moses.png" alt="Moses" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="text-sm">Moses</div>
+          </div>
+          <div class="text-center cursor-pointer opponent-choice" data-avatar="old_man" onclick="toggleOpponent('old_man', 'Old Man')">
+            <img src="/images/avatars/old_man.png" alt="Old Man" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="text-sm">Old Man</div>
+          </div>
+        </div>
+
+        <div id="selection-message" class="text-center text-white/60 text-sm mb-4">Select 3 opponents</div>
+
+        <div class="text-center">
+          <button id="continue-to-deck" onclick="continueToDecks()" disabled class="px-8 py-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 transition disabled:opacity-50 disabled:cursor-not-allowed">
+            Continue to Deck Selection
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Deck Selection Screen -->
-    <div id="deck-selection" class="flex flex-col items-center justify-center min-h-[70vh]">
+    <div id="deck-selection" class="hidden flex flex-col items-center justify-center min-h-[70vh]">
       <div class="card p-8 max-w-2xl backdrop-blur-xl" style="background: rgba(0,0,0,0.8);">
         <h1 class="text-4xl font-serif gold-text mb-4 text-center">Cardamon Tarot Game</h1>
         <p class="text-white/80 mb-8 text-center">
@@ -72,39 +113,13 @@
 
     <!-- Game Board (hidden initially) -->
     <div id="game-board" class="hidden">
-      <!-- Top opponent -->
-      <div class="flex justify-center mb-8">
-        <div class="text-center">
-          <img id="player-top-avatar" src="/images/avatars/moses.png" alt="Opponent" class="player-avatar mx-auto mb-2">
-          <div id="player-top-name" class="text-sm font-medium">Moses</div>
-          <div id="player-top-cards" class="text-xs text-white/60">18 cards</div>
-        </div>
-      </div>
-
-      <!-- Left and right opponents + center table -->
-      <div class="grid grid-cols-[200px,1fr,200px] gap-8 items-center mb-8">
-        <!-- Left opponent -->
-        <div class="text-center">
-          <img id="player-left-avatar" src="/images/avatars/lady_book.png" alt="Opponent" class="player-avatar mx-auto mb-2">
-          <div id="player-left-name" class="text-sm font-medium">Lady Book</div>
-          <div id="player-left-cards" class="text-xs text-white/60">18 cards</div>
-        </div>
-
-        <!-- Center table (played cards) -->
-        <div id="trick-area" class="bg-black/30 rounded-3xl border border-white/20 p-8 min-h-[300px] flex items-center justify-center">
-          <div class="grid grid-cols-2 gap-8">
-            <div id="card-top" class="flex justify-center"></div>
-            <div id="card-left" class="flex justify-center"></div>
-            <div id="card-right" class="flex justify-center"></div>
-            <div id="card-bottom" class="flex justify-center"></div>
-          </div>
-        </div>
-
-        <!-- Right opponent -->
-        <div class="text-center">
-          <img id="player-right-avatar" src="/images/avatars/old_man.png" alt="Opponent" class="player-avatar mx-auto mb-2">
-          <div id="player-right-name" class="text-sm font-medium">Old Man</div>
-          <div id="player-right-cards" class="text-xs text-white/60">18 cards</div>
+      <!-- Center table (played cards) -->
+      <div id="trick-area" class="bg-black/30 rounded-3xl border border-white/20 p-8 min-h-[350px] flex items-center justify-center mb-8">
+        <div class="grid grid-cols-2 gap-12">
+          <div id="card-0" class="flex justify-center"></div>
+          <div id="card-1" class="flex justify-center"></div>
+          <div id="card-2" class="flex justify-center"></div>
+          <div id="card-3" class="flex justify-center"></div>
         </div>
       </div>
 
@@ -113,14 +128,31 @@
 
       <!-- Player's hand (bottom) -->
       <div class="flex flex-col items-center">
-        <div class="flex items-center gap-4 mb-4">
-          <img src="/images/avatars/hippie.png" alt="You" class="player-avatar">
-          <div>
-            <div class="font-medium text-lg">You</div>
-            <div id="player-score" class="text-sm text-white/60">Score: 0</div>
+        <div id="player-hand" class="flex flex-wrap justify-center gap-2 max-w-6xl mb-6"></div>
+
+        <!-- All 4 players at bottom -->
+        <div class="grid grid-cols-4 gap-8 max-w-4xl">
+          <div class="text-center">
+            <img id="player-0-avatar" src="/images/avatars/hippie.png" alt="You" class="player-avatar mx-auto mb-2">
+            <div id="player-0-name" class="font-medium">You</div>
+            <div id="player-0-cards" class="text-xs text-white/60">18 cards</div>
+          </div>
+          <div class="text-center">
+            <img id="player-1-avatar" src="/images/avatars/moses.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+            <div id="player-1-name" class="text-sm font-medium">Moses</div>
+            <div id="player-1-cards" class="text-xs text-white/60">18 cards</div>
+          </div>
+          <div class="text-center">
+            <img id="player-2-avatar" src="/images/avatars/lady_book.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+            <div id="player-2-name" class="text-sm font-medium">Lady Book</div>
+            <div id="player-2-cards" class="text-xs text-white/60">18 cards</div>
+          </div>
+          <div class="text-center">
+            <img id="player-3-avatar" src="/images/avatars/old_man.png" alt="Opponent" class="player-avatar mx-auto mb-2">
+            <div id="player-3-name" class="text-sm font-medium">Old Man</div>
+            <div id="player-3-cards" class="text-xs text-white/60">18 cards</div>
           </div>
         </div>
-        <div id="player-hand" class="flex flex-wrap justify-center gap-2 max-w-5xl"></div>
       </div>
     </div>
 
