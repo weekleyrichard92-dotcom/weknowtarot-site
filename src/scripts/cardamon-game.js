@@ -76,12 +76,14 @@ function getCardImage(suit, rank) {
   if (suit === 'trump') {
     return `/tarot-reader/assets/cards/${selectedDeck}/${rank}.png`;
   } else {
-    // Different decks have different naming conventions
-    if (selectedDeck === 'hippie_tarot') {
-      // hippie_tarot uses: queen_swords.png (rank_suit)
+    // Court cards have different naming conventions between decks
+    const isCourtCard = ['page', 'knight', 'queen', 'king'].includes(rank);
+
+    if (selectedDeck === 'hippie_tarot' && isCourtCard) {
+      // hippie_tarot court cards use: queen_swords.png (rank_suit)
       return `/tarot-reader/assets/cards/${selectedDeck}/${rank}_${suit}.png`;
     } else {
-      // best_simple uses: swords_queen.png (suit_rank)
+      // Numbered cards (01-10) and best_simple use: swords_10.png (suit_rank)
       return `/tarot-reader/assets/cards/${selectedDeck}/${suit}_${rank}.png`;
     }
   }
