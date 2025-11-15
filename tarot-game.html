@@ -131,6 +131,17 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
+    .bg-gold {
+      background-color: #d4af37;
+    }
+    .opponent-choice img {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+    .opponent-choice.selected img {
+      border-color: rgba(212, 175, 55, 0.9) !important;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body class="text-white min-h-screen">
@@ -147,23 +158,38 @@
 
         <div class="grid grid-cols-5 gap-4 mb-6">
           <div class="text-center cursor-pointer opponent-choice" data-avatar="hippie" onclick="toggleOpponent('hippie', 'Hippie')">
-            <img src="/images/avatars/hippie.png" alt="Hippie" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="relative inline-block">
+              <img src="/images/avatars/hippie.png" alt="Hippie" class="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition-all duration-200">
+              <div class="checkmark hidden absolute top-0 right-0 bg-gold text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">✓</div>
+            </div>
             <div class="text-sm">Hippie</div>
           </div>
           <div class="text-center cursor-pointer opponent-choice" data-avatar="lady" onclick="toggleOpponent('lady', 'Lady')">
-            <img src="/images/avatars/lady.png" alt="Lady" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="relative inline-block">
+              <img src="/images/avatars/lady.png" alt="Lady" class="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition-all duration-200">
+              <div class="checkmark hidden absolute top-0 right-0 bg-gold text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">✓</div>
+            </div>
             <div class="text-sm">Lady</div>
           </div>
           <div class="text-center cursor-pointer opponent-choice" data-avatar="lady_book" onclick="toggleOpponent('lady_book', 'Lady Book')">
-            <img src="/images/avatars/lady_book.png" alt="Lady Book" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="relative inline-block">
+              <img src="/images/avatars/lady_book.png" alt="Lady Book" class="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition-all duration-200">
+              <div class="checkmark hidden absolute top-0 right-0 bg-gold text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">✓</div>
+            </div>
             <div class="text-sm">Lady Book</div>
           </div>
           <div class="text-center cursor-pointer opponent-choice" data-avatar="moses" onclick="toggleOpponent('moses', 'Moses')">
-            <img src="/images/avatars/moses.png" alt="Moses" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="relative inline-block">
+              <img src="/images/avatars/moses.png" alt="Moses" class="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition-all duration-200">
+              <div class="checkmark hidden absolute top-0 right-0 bg-gold text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">✓</div>
+            </div>
             <div class="text-sm">Moses</div>
           </div>
           <div class="text-center cursor-pointer opponent-choice" data-avatar="old_man" onclick="toggleOpponent('old_man', 'Old Man')">
-            <img src="/images/avatars/old_man.png" alt="Old Man" class="w-32 h-32 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition">
+            <div class="relative inline-block">
+              <img src="/images/avatars/old_man.png" alt="Old Man" class="w-20 h-20 rounded-full mx-auto mb-2 border-4 border-transparent hover:border-white/30 transition-all duration-200">
+              <div class="checkmark hidden absolute top-0 right-0 bg-gold text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">✓</div>
+            </div>
             <div class="text-sm">Old Man</div>
           </div>
         </div>

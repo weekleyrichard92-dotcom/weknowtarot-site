@@ -44,18 +44,24 @@ const CARD_VALUES = {
 // Avatar selection
 window.toggleOpponent = function(avatar, name) {
   const index = selectedOpponents.findIndex(opp => opp.avatar === avatar);
-  const element = document.querySelector(`[data-avatar="${avatar}"] img`);
+  const container = document.querySelector(`[data-avatar="${avatar}"]`);
+  const checkmark = container.querySelector('.checkmark');
 
   if (index >= 0) {
     // Deselect
     selectedOpponents.splice(index, 1);
-    element.classList.remove('border-gold');
-    element.style.borderColor = 'transparent';
+    container.classList.remove('selected');
+    if (checkmark) {
+      checkmark.classList.add('hidden');
+    }
   } else {
     // Select (max 3)
     if (selectedOpponents.length < 3) {
       selectedOpponents.push({ avatar, name });
-      element.style.borderColor = 'rgba(212, 175, 55, 0.8)';
+      container.classList.add('selected');
+      if (checkmark) {
+        checkmark.classList.remove('hidden');
+      }
     }
   }
 
