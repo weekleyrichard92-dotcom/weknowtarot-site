@@ -15,7 +15,8 @@ export default defineConfig({
         digitalProducts: path.resolve(__dirname, 'digital-products.html'),
         blog: path.resolve(__dirname, 'blog.html'),
         checkout: path.resolve(__dirname, 'checkout.html'),
-        tarotGame: path.resolve(__dirname, 'tarot-game.html')
+        tarotGame: path.resolve(__dirname, 'tarot-game.html'),
+        tarotReaderPremium: path.resolve(__dirname, 'tarot-reader-premium.html')
       }
     }
   }
