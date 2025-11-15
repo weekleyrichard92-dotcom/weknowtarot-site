@@ -1,0 +1,398 @@
+// Prisma schema for We Know Tarot Platform
+// Based on docs/DATABASE_SCHEMA.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER MANAGEMENT
+// ============================================================================
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      UserRole @default(CONSUMER)
+
+  // Profile
+  avatar    String?
+  bio       String?
+  website   String?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lastLogin DateTime?
+
+  // Relations
+  subscription    Subscription?
+  projects        Project[]
+  listings        Listing[]
+  orders          Order[]      @relation("buyer")
+  sales           Order[]      @relation("seller")
+  readings        Reading[]
+  whitelabelConfig WhitelabelConfig?
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+enum UserRole {
+  CONSUMER
+  CREATOR
+  CREATOR_PRO
+  CREATOR_BUSINESS
+  ADMIN
+}
+
+// ============================================================================
+// SUBSCRIPTIONS & BILLING
+// ============================================================================
+
+model Subscription {
+  id              String            @id @default(uuid())
+  userId          String            @unique
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tier            SubscriptionTier
+  status          SubscriptionStatus @default(ACTIVE)
+
+  // Stripe
+  stripeCustomerId       String?  @unique
+  stripeSubscriptionId   String?  @unique
+  stripePriceId          String?
+
+  // Billing
+  currentPeriodStart     DateTime?
+  currentPeriodEnd       DateTime?
+  cancelAtPeriodEnd      Boolean  @default(false)
+
+  // Timestamps
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+enum SubscriptionTier {
+  FREE
+  CREATOR
+  CREATOR_PRO
+  CREATOR_BUSINESS
+  READER_PREMIUM
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  PAUSED
+  TRIALING
+}
+
+// ============================================================================
+// DECK CREATION (PROJECTS & CARDS)
+// ============================================================================
+
+model Project {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+
+  // Style & Configuration
+  styleProfile  Json?   // Stores style settings
+  deckType      String  @default("standard-78") // standard-78, major-only-22, oracle-custom
+
+  // Status
+  status      ProjectStatus @default(DRAFT)
+  progress    Int           @default(0) // 0-100
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+
+  // Relations
+  cards       Card[]
+  listing     Listing?
+
+  @@index([userId])
+  @@index([status])
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  DRAFT
+  IN_PROGRESS
+  COMPLETE
+  PUBLISHED
+  ARCHIVED
+}
+
+model Card {
+  id          String   @id @default(uuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  // Card Identity
+  cardNumber  Int      // 0-77 for standard deck
+  cardName    String   // "The Fool", "Ace of Cups", etc.
+  suit        String?  // major, wands, cups, swords, pentacles
+
+  // Content
+  aiPrompt    String?  @db.Text
+  meaning     String?  @db.Text
+  reversedMeaning String? @db.Text
+  keywords    String[] // Array of keywords
+
+  // Status
+  status      CardStatus @default(PENDING)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  images      CardImage[]
+
+  @@unique([projectId, cardNumber])
+  @@index([projectId])
+  @@index([status])
+  @@map("cards")
+}
+
+enum CardStatus {
+  PENDING
+  PROMPT_READY
+  GENERATING
+  GENERATED
+  APPROVED
+  REJECTED
+}
+
+model CardImage {
+  id          String   @id @default(uuid())
+  cardId      String
+  card        Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+
+  // Image Data
+  url         String   // CDN URL
+  filename    String
+  width       Int
+  height      Int
+  fileSize    Int      // bytes
+  format      String   // png, jpg, etc.
+
+  // Generation Details
+  prompt      String?  @db.Text
+  model       String?  // qwen3:30b, stable-diffusion, etc.
+  seed        Int?
+
+  // Status
+  isPrimary   Boolean  @default(false) // The selected image for this card
+  status      String   @default("pending") // pending, processing, ready, failed
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+
+  @@index([cardId])
+  @@index([isPrimary])
+  @@map("card_images")
+}
+
+// ============================================================================
+// MARKETPLACE
+// ============================================================================
+
+model Listing {
+  id          String   @id @default(uuid())
+  projectId   String   @unique
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  // Listing Details
+  title       String
+  description String   @db.Text
+  tags        String[] // Array of tags
+
+  // Pricing
+  priceDigital    Decimal  @db.Decimal(10, 2)
+  pricePhysical   Decimal? @db.Decimal(10, 2)
+
+  // Preview Images
+  coverImage      String
+  previewImages   String[] // Array of URLs
+
+  // Stats
+  views       Int      @default(0)
+  downloads   Int      @default(0)
+  sales       Int      @default(0)
+  rating      Decimal? @db.Decimal(3, 2) // 0.00 - 5.00
+
+  // Status
+  status      ListingStatus @default(DRAFT)
+  featured    Boolean       @default(false)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+
+  // Relations
+  orders      Order[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([featured])
+  @@fulltext([title, description])
+  @@map("listings")
+}
+
+enum ListingStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  SUSPENDED
+  ARCHIVED
+}
+
+model Order {
+  id          String   @id @default(uuid())
+
+  // Parties
+  buyerId     String
+  buyer       User     @relation("buyer", fields: [buyerId], references: [id])
+  sellerId    String
+  seller      User     @relation("seller", fields: [sellerId], references: [id])
+  listingId   String
+  listing     Listing  @relation(fields: [listingId], references: [id])
+
+  // Order Details
+  orderType   OrderType
+  amount      Decimal  @db.Decimal(10, 2)
+
+  // Platform Fees
+  platformFee Decimal  @db.Decimal(10, 2)
+  stripeFee   Decimal  @db.Decimal(10, 2)
+  sellerPayout Decimal @db.Decimal(10, 2)
+
+  // Payment
+  stripePaymentId String?
+  paymentStatus   PaymentStatus @default(PENDING)
+
+  // Fulfillment (for physical orders)
+  trackingNumber  String?
+  shippingStatus  String?
+
+  // Download (for digital orders)
+  downloadUrl     String?
+  downloadCount   Int     @default(0)
+  downloadExpiry  DateTime?
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([listingId])
+  @@index([paymentStatus])
+  @@map("orders")
+}
+
+enum OrderType {
+  DIGITAL
+  PHYSICAL
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+// ============================================================================
+// TAROT READER APP
+// ============================================================================
+
+model Reading {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  // Reading Details
+  spreadType  String   // single, three-card, celtic-cross, etc.
+  deckId      String?  // Which custom deck was used (if any)
+
+  // Cards Drawn
+  cardsData   Json     // Array of card objects with positions, reversals
+
+  // AI Interpretation
+  interpretation String? @db.Text
+  aiModel        String? // qwen3:30b, etc.
+
+  // User Notes
+  question    String?  @db.Text
+  notes       String?  @db.Text
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([spreadType])
+  @@index([createdAt])
+  @@map("readings")
+}
+
+// ============================================================================
+// WHITE-LABEL / CUSTOM APPS
+// ============================================================================
+
+model WhitelabelConfig {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Branding
+  appName     String
+  logo        String?
+  favicon     String?
+  primaryColor String  @default("#8B5CF6")
+  secondaryColor String @default("#EC4899")
+
+  // Domain
+  customDomain String?  @unique
+  subdomain    String   @unique
+
+  // Features
+  enabledFeatures Json   // Array of enabled feature flags
+
+  // Deployment
+  deploymentUrl String?
+  status        String   @default("pending") // pending, deploying, active, failed
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([customDomain])
+  @@index([subdomain])
+  @@map("whitelabel_configs")
+}
