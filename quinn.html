@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quinn — AI Tarot Guide | We Know Tarot</title>
+  <script type="module" src="/src/scripts/main.js"></script>
+  <style>
+    #chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .message {
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 80%;
+      animation: slideIn 0.3s ease-out;
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .message.user {
+      background: rgba(212, 175, 55, 0.2);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    .message.quinn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      align-self: flex-start;
+    }
+    .message.quinn .speaker-icon {
+      display: inline-block;
+      margin-left: 8px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    .message.quinn .speaker-icon:hover {
+      opacity: 1;
+    }
+    .typing-indicator {
+      display: flex;
+      gap: 4px;
+      padding: 12px 16px;
+    }
+    .typing-indicator span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.6);
+      animation: bounce 1.4s infinite;
+    }
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+    #input-area {
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    #user-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: white;
+      font-size: 14px;
+      resize: none;
+      font-family: inherit;
+    }
+    #user-input:focus {
+      outline: none;
+      border-color: rgba(212, 175, 55, 0.6);
+    }
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+    }
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(212, 175, 55, 0.6);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #status {
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    #status.connected {
+      color: rgba(76, 175, 80, 0.8);
+    }
+    #status.error {
+      color: rgba(244, 67, 54, 0.8);
+    }
+  </style>
+</head>
+<body class="text-white mystic-gradient min-h-screen">
+  <div id="navbar"></div>
+
+  <main class="max-w-6xl mx-auto px-4 pt-20 pb-24">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl md:text-5xl font-serif gold-text mb-4">Quinn</h1>
+      <p class="text-white/70 max-w-2xl mx-auto">
+        Your AI Tarot Guide powered by Qwen3 (30 billion parameters). Ask about tarot meanings, get readings interpreted, or explore mystical wisdom.
+      </p>
+    </div>
+
+    <div id="status">Checking connection...</div>
+
+    <div class="card backdrop-blur-xl" style="background: rgba(0,0,0,0.6);">
+      <div id="chat-container">
+        <div id="messages"></div>
+        <div id="input-area">
+          <textarea
+            id="user-input"
+            rows="2"
+            placeholder="Ask Quinn anything about tarot..."
+            onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault(); sendMessage();}"
+          ></textarea>
+          <div class="btn-group">
+            <button class="btn" onclick="sendMessage()" id="send-btn">Send</button>
+            <button class="btn" onclick="clearChat()">Clear Chat</button>
+            <label class="btn" style="cursor: pointer;">
+              <input type="checkbox" id="voice-toggle" style="margin-right: 6px;" />
+              Auto-speak
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 text-center text-white/50 text-sm">
+      <p>💡 Try asking: "What does The Fool card mean?" or "Interpret a three-card spread for me"</p>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script>
+    const BACKEND_URL = 'http://localhost:3001';
+    let isTyping = false;
+
+    // Check backend connection
+    async function checkConnection() {
+      const status = document.getElementById('status');
+      try {
+        const res = await fetch(`${BACKEND_URL}/health`);
+        const data = await res.json();
+        status.textContent = `✓ Connected to Quinn (${data.brain})`;
+        status.className = 'connected';
+
+        // Add welcome message
+        addMessage('quinn', "Hello! I'm Quinn, your AI tarot guide. I'm powered by a 30 billion parameter brain and I'm here to help you explore the mystical world of tarot. What would you like to know?");
+      } catch (error) {
+        status.textContent = '✗ Quinn is offline. Make sure the backend is running (npm start in backend folder)';
+        status.className = 'error';
+      }
+    }
+
+    function addMessage(sender, text) {
+      const messages = document.getElementById('messages');
+      const msg = document.createElement('div');
+      msg.className = `message ${sender}`;
+
+      if (sender === 'quinn') {
+        const speakerIcon = '🔊';
+        msg.innerHTML = `${text}<span class="speaker-icon" onclick="speak('${text.replace(/'/g, "\\'")}')"> ${speakerIcon}</span>`;
+
+        // Auto-speak if enabled
+        if (document.getElementById('voice-toggle').checked) {
+          speak(text);
+        }
+      } else {
+        msg.textContent = text;
+      }
+
+      messages.appendChild(msg);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function showTyping() {
+      const messages = document.getElementById('messages');
+      const typing = document.createElement('div');
+      typing.id = 'typing-indicator';
+      typing.className = 'message quinn typing-indicator';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      messages.appendChild(typing);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function hideTyping() {
+      const typing = document.getElementById('typing-indicator');
+      if (typing) typing.remove();
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+
+      if (!message || isTyping) return;
+
+      addMessage('user', message);
+      input.value = '';
+
+      isTyping = true;
+      showTyping();
+      document.getElementById('send-btn').disabled = true;
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/ask-tarot`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: message })
+        });
+
+        const data = await res.json();
+        hideTyping();
+        addMessage('quinn', data.answer || 'Sorry, I had trouble processing that.');
+      } catch (error) {
+        hideTyping();
+        addMessage('quinn', 'Sorry, I seem to be having connection issues. Make sure the backend is running.');
+      } finally {
+        isTyping = false;
+        document.getElementById('send-btn').disabled = false;
+      }
+    }
+
+    function clearChat() {
+      document.getElementById('messages').innerHTML = '';
+      addMessage('quinn', "Chat cleared! What would you like to explore?");
+    }
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        // Try to find a good voice
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(v => v.name.includes('Female')) ||
+                               voices.find(v => v.name.includes('Samantha')) ||
+                               voices.find(v => v.lang.startsWith('en'));
+
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+
+        utterance.rate = 0.9; // Slightly slower for mystical feel
+        utterance.pitch = 1.1; // Slightly higher pitch
+
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert('Text-to-speech is not supported in your browser.');
+      }
+    }
+
+    // Initialize
+    checkConnection();
+
+    // Load voices (needed for some browsers)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+      };
+    }
+  </script>
+</body>
+</html>
