@@ -3,6 +3,7 @@
 
 let selectedDeck = '';
 let selectedOpponents = [];
+let difficulty = 'medium';
 let gameState = null;
 
 const AVATAR_NAMES = {
@@ -81,6 +82,8 @@ window.toggleOpponent = function(avatar, name) {
 };
 
 window.continueToDecks = function() {
+  const difficultySelect = document.getElementById('difficulty-select');
+  difficulty = difficultySelect ? difficultySelect.value : 'medium';
   document.getElementById('avatar-selection').classList.add('hidden');
   document.getElementById('deck-selection').classList.remove('hidden');
 };
@@ -363,15 +366,156 @@ async function playCard(playerIndex) {
   updateUI();
 }
 
-// AI card selection (simplified)
+// AI card selection with difficulty levels
 function chooseAICard(player) {
   const legalCards = getLegalCards(player.hand);
 
   if (legalCards.length === 0) return 0; // Shouldn't happen
 
-  // Simple strategy: play first legal card
-  const chosenCard = legalCards[0];
+  let chosenCard;
+
+  switch (difficulty) {
+    case 'beginner':
+      // Random from legal cards
+      chosenCard = legalCards[Math.floor(Math.random() * legalCards.length)];
+      break;
+
+    case 'medium':
+      chosenCard = chooseMediumAICard(player, legalCards);
+      break;
+
+    case 'advanced':
+      chosenCard = chooseAdvancedAICard(player, legalCards);
+      break;
+
+    default:
+      chosenCard = legalCards[0];
+  }
+
   return player.hand.indexOf(chosenCard);
+}
+
+// Medium AI: Basic strategy
+function chooseMediumAICard(player, legalCards) {
+  const isLeading = gameState.currentTrick.length === 0;
+
+  if (isLeading) {
+    // When leading: prefer medium-value cards to force out high cards
+    // Avoid leading with very high or very low cards
+    const mediumCards = legalCards.filter(c => {
+      if (c.isTrump) return false; // Don't lead trump unless forced
+      const rank = RANKS.suits.indexOf(c.rank);
+      return rank >= 4 && rank <= 8; // Cards 5-9 are "medium"
+    });
+
+    if (mediumCards.length > 0) {
+      return mediumCards[0];
+    }
+
+    // If no medium cards, play lowest non-trump
+    const nonTrumps = legalCards.filter(c => !c.isTrump);
+    if (nonTrumps.length > 0) {
+      return nonTrumps[nonTrumps.length - 1]; // Lowest card
+    }
+  }
+
+  // When following: decide if we can win
+  const currentWinningCard = getCurrentWinningCard();
+  const canWin = legalCards.some(c => beats(c, currentWinningCard, gameState.currentTrick[0].card));
+
+  if (canWin) {
+    // Play the lowest card that can win
+    const winningCards = legalCards.filter(c => beats(c, currentWinningCard, gameState.currentTrick[0].card));
+    return winningCards[0]; // Cards are sorted, so first is lowest
+  } else {
+    // Can't win: slough off lowest worthless card
+    return legalCards[legalCards.length - 1];
+  }
+
+  return legalCards[0]; // Fallback
+}
+
+// Advanced AI: Smart play with card tracking
+function chooseAdvancedAICard(player, legalCards) {
+  const isLeading = gameState.currentTrick.length === 0;
+
+  if (isLeading) {
+    // Advanced leading strategy
+    // 1. Try to lead a suit where we have high cards
+    const suitStrength = {};
+    SUITS.forEach(suit => {
+      const cardsInSuit = player.hand.filter(c => c.suit === suit && !c.isTrump);
+      const highCards = cardsInSuit.filter(c => c.value >= 2.5); // Courts
+      suitStrength[suit] = highCards.length;
+    });
+
+    // Lead medium card from strongest suit
+    for (const suit of SUITS) {
+      if (suitStrength[suit] >= 2) {
+        const suitCards = legalCards.filter(c => c.suit === suit);
+        const mediumCards = suitCards.filter(c => {
+          const rank = RANKS.suits.indexOf(c.rank);
+          return rank >= 4 && rank <= 8;
+        });
+        if (mediumCards.length > 0) {
+          return mediumCards[0];
+        }
+      }
+    }
+
+    // Otherwise same as medium AI
+    return chooseMediumAICard(player, legalCards);
+  }
+
+  // When following
+  const currentWinningCard = getCurrentWinningCard();
+  const ledCard = gameState.currentTrick[0].card;
+  const canWin = legalCards.some(c => beats(c, currentWinningCard, ledCard));
+
+  // Check if there are high-value cards in the trick
+  const trickValue = gameState.currentTrick.reduce((sum, play) => sum + play.card.value, 0);
+  const highValueTrick = trickValue >= 4; // Worth fighting for
+
+  if (canWin && highValueTrick) {
+    // Worth winning: use lowest winning card
+    const winningCards = legalCards.filter(c => beats(c, currentWinningCard, ledCard));
+    return winningCards[0];
+  } else if (canWin && !highValueTrick) {
+    // Low value trick: maybe let partner win, or win cheaply
+    const winningCards = legalCards.filter(c => beats(c, currentWinningCard, ledCard));
+    // Only win if we can do it with a low card
+    const cheapWins = winningCards.filter(c => c.value <= 1);
+    if (cheapWins.length > 0) {
+      return cheapWins[0];
+    }
+    // Otherwise slough
+    return legalCards[legalCards.length - 1];
+  } else {
+    // Can't win: slough lowest card
+    // But if we have high-value cards, save them
+    const lowValueCards = legalCards.filter(c => c.value < 2);
+    if (lowValueCards.length > 0) {
+      return lowValueCards[lowValueCards.length - 1];
+    }
+    return legalCards[legalCards.length - 1];
+  }
+}
+
+// Helper: Get the currently winning card in the trick
+function getCurrentWinningCard() {
+  if (gameState.currentTrick.length === 0) return null;
+
+  let winningPlay = gameState.currentTrick[0];
+  const ledCard = gameState.currentTrick[0].card;
+
+  for (let i = 1; i < gameState.currentTrick.length; i++) {
+    const play = gameState.currentTrick[i];
+    if (beats(play.card, winningPlay.card, ledCard)) {
+      winningPlay = play;
+    }
+  }
+
+  return winningPlay.card;
 }
 
 // Get legal cards to play
